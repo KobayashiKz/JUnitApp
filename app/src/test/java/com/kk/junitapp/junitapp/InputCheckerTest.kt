@@ -197,4 +197,19 @@ class InputCheckerTest {
                 tuple("Angels", "Angel Stadium")
             )
     }
+
+    @Test
+    // assertJの例外チェック
+    fun assertJ_exception_practice() {
+        assertThatExceptionOfType(RuntimeException::class.java)
+            // 例外を出す可能性のあるメソッドを指定
+            .isThrownBy { target.isValid(null) }
+            // Exceptionの詳細メッセージ
+            .withMessage("Aborted!")
+            // この例外が他の例外経由で送出されていないことのチェック
+            .withNoCause()
+    }
+    // Truth: AssertJに似たインターフェースを持っている
+    // Kotlinとすごく相性がいい
+    // AssertK: AssertJにインスパイアされたKotlin向けアサーションライブラリ
 }
