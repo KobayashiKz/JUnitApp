@@ -15,6 +15,16 @@ class WeatherForecast(private val satellite: Satellite,
         }
     }
 
+    // 引数によって戻り値が変わるメソッド
+    // 引数マッチャーによってテストする
+    fun shouldBringUmbrellaLocation(latitude: Double, longitude: Double): Boolean {
+        val weather = satellite.getWeatherLocation(latitude, longitude)
+        return when (weather) {
+            Weather.SUNNY, Weather.CLOUDY -> false
+            Weather.RAINY -> true
+        }
+    }
+
     // 現在天気の保存. モック用メソッド
     // 戻り値がないためrecord()が内部で呼ばれたことでOKとする
     fun recordCurrentWeather() {
@@ -31,6 +41,10 @@ enum class Weather {
 // openでオーバーライド可能に
 open class Satellite {
     open fun getWeather(): Weather {
+        return Weather.SUNNY
+    }
+
+    open fun getWeatherLocation(latitude: Double, longitude: Double): Weather {
         return Weather.SUNNY
     }
 }
