@@ -32,6 +32,13 @@ class WeatherForecast(private val satellite: Satellite,
         recorder?.record(weather)
         val formatted = formatter?.format(weather)
     }
+
+    // Mockitを使用したメソッド呼び出し検証用メソッド
+    fun recordCurrentWeatherLocation(latitude: Double, longitude: Double) {
+        val weather = satellite.getWeatherLocation(latitude, longitude)
+        recorder?.record(weather)
+        val formatted = formatter?.format(weather)
+    }
 }
 
 enum class Weather {
@@ -51,6 +58,10 @@ open class Satellite {
 
 open class WeatherRecorder {
     open fun record(weather: Weather) {
+
+    }
+
+    open fun recordStr(string: String) {
 
     }
 }

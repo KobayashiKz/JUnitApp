@@ -1,9 +1,6 @@
 package com.kk.junitapp.junitapp
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -12,6 +9,7 @@ class WeatherForecastMockitTest {
 
     lateinit var satellite: Satellite
     lateinit var weatherForecast: WeatherForecast
+    lateinit var recorder: WeatherRecorder
 
     // Mockit: モック用ライブラリ
     // モック,スタブ,スパイが主な機能.
@@ -28,9 +26,11 @@ class WeatherForecastMockitTest {
         // .thenReturn()
         whenever(satellite.getWeather()).thenReturn(Weather.SUNNY)
 
-        val recorder = WeatherRecorder()
+        recorder = WeatherRecorder()
         val formatter = WeatherFormatter()
         weatherForecast = WeatherForecast(satellite, recorder, formatter)
+
+        val mockRecorder = mock<WeatherRecorder>(name = "MockRecorder")
     }
 
     @Test
@@ -80,5 +80,19 @@ class WeatherForecastMockitTest {
         // 実際に確認
         val actual = weatherForecast.shouldBringUmbrellaLocation(35.669784, 139.817728)
         assertThat(actual).isFalse()
+    }
+
+    // Mockitを使用したモックに対するメソッド呼び出し検証
+    @Test
+    fun recordCurrentWeather_assertRecordCalled() {
+        weatherForecast.recordCurrentWeatherLocation(37.580006, -122.345106)
+        // verify(): メソッドが呼び出されていることを確認する
+        // 第二引数： times()が呼び出されている回数
+        // 対象クラス.record(引数)
+        verify(recorder, times(1)).record(any())
+
+        // 引数マッチャーでのメソッド呼び出し検証
+        weatherForecast.recordCurrentWeatherLocation(37.580006, -122.345106)
+        verify(recorder, times(1)).recordStr(eq("Weather is SUNNY"))
     }
 }
